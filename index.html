@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Preview Tool - Gemi Edition</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oregano&family=Playball&family=Great+Vibes&family=Pacifico&family=Cinzel:wght@700&family=Alex+Brush&family=Ranchers&display=swap" rel="stylesheet">
+    
+    <style>
+        
+
+/* Yerel Fontları Tanımlama - "./" ekleyerek aynı dizinde olduğunu garanti ediyoruz */
+        @font-face { font-family: 'Algerian'; src: url('./ALGER.TTF') format('truetype'); }
+        @font-face { font-family: 'ALS Script'; src: url('./ALSScript.ttf') format('truetype'); }
+        @font-face { font-family: 'Birds of Paradise'; src: url('./BirdsOfParadise.ttf') format('truetype'); }
+        @font-face { font-family: 'Lucinda Calligraphy'; src: url('./LCALLIG.TTF') format('truetype'); }
+        @font-face { font-family: 'Wished Lovely'; src: url('./WishedLovely.ttf') format('truetype'); }
+
+
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; color: #333; }
+        .container { max-width: 1100px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        /* Kontrol Paneli */
+        .header-panel { padding: 30px; border-bottom: 2px solid #f0f0f0; background: #fafafa; }
+        .main-input { width: 100%; padding: 15px; font-size: 20px; border: 2px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; }
+        .main-input:focus { border-color: #007bff; box-shadow: 0 0 8px rgba(0,123,255,0.2); }
+        
+        .styling-options { margin-top: 15px; display: flex; gap: 25px; }
+        .styling-options label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #555; }
+
+        /* Liste Alanı */
+        .list-header { display: flex; background: #343a40; color: white; padding: 12px 0; font-weight: bold; }
+        .col-name { width: 25%; padding-left: 20px; }
+        .col-preview { width: 75%; }
+
+        #font-list { max-height: 600px; overflow-y: auto; }
+        .font-row { display: flex; align-items: center; border-bottom: 1px solid #eee; cursor: pointer; transition: 0.2s; }
+        .font-row:hover { background: #f8f9fa; }
+        .font-row.selected { background: #e7f1ff; border-left: 6px solid #007bff; }
+
+        .font-label { width: 25%; padding: 20px; font-size: 13px; color: #888; border-right: 1px solid #f0f0f0; }
+        .font-output { width: 75%; padding: 20px; font-size: 32px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Stil Uygulayıcılar */
+        .is-italic { font-style: italic; }
+        .is-bold { font-weight: bold; }
+
+        .footer { padding: 20px; text-align: right; background: #fafafa; border-top: 1px solid #eee; }
+        .btn-send { padding: 15px 40px; background: #28a745; color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-send:hover { background: #218838; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-panel">
+        <input type="text" id="textInput" class="main-input" placeholder="Enter your custom text..." value="Life is Beautiful">
+        <div class="styling-options">
+            <label><input type="checkbox" id="italicToggle"> Italic</label>
+            <label><input type="checkbox" id="boldToggle"> Bold</label>
+        </div>
+    </div>
+
+    <div class="list-header">
+        <div class="col-name">Font Family</div>
+        <div class="col-preview">Live Preview</div>
+    </div>
+
+    <div id="font-list">
+        </div>
+
+    <div class="footer">
+        <button class="btn-send" onclick="sendToSiteManager()">SEND TO SELECTION</button>
+    </div>
+</div>
+
+<script>
+    // Birleştirdiğimiz font listesi
+    const fontLibrary = [
+        { name: "Algerian", family: "'Algerian', serif" },
+        { name: "ALS Script", family: "'ALS Script', cursive" },
+        { name: "Birds of Paradise", family: "'Birds of Paradise', cursive" },
+        { name: "Lucinda Calligraphy", family: "'Lucinda Calligraphy', cursive" },
+        { name: "Wished Lovely", family: "'Wished Lovely', cursive" },
+        { name: "Dancing Script", family: "'Dancing Script', cursive" },
+        { name: "Oregano", family: "'Oregano', cursive" },
+        { name: "Playball", family: "'Playball', cursive" },
+        { name: "Great Vibes", family: "'Great Vibes', cursive" },
+        { name: "Pacifico", family: "'Pacifico', cursive" },
+        { name: "Cinzel", family: "'Cinzel', serif" },
+        { name: "Alex Brush", family: "'Alex Brush', cursive" },
+        { name: "Ranchers", family: "'Ranchers', display" }
+    ];
+
+    let selectedFontName = "";
+    const textInput = document.getElementById('textInput');
+    const fontListContainer = document.getElementById('font-list');
+
+    function updatePreview() {
+        fontListContainer.innerHTML = "";
+        const currentText = textInput.value || "Type something...";
+        const isItalic = document.getElementById('italicToggle').checked;
+        const isBold = document.getElementById('boldToggle').checked;
+
+        fontLibrary.forEach(font => {
+            const row = document.createElement('div');
+            row.className = 'font-row' + (selectedFontName === font.name ? ' selected' : '');
+            row.onclick = () => {
+                selectedFontName = font.name;
+                updatePreview();
+            };
+
+            const label = document.createElement('div');
+            label.className = 'font-label';
+            label.innerText = font.name;
+
+            const preview = document.createElement('div');
+            preview.className = 'font-output';
+            preview.style.fontFamily = font.family;
+            preview.innerText = currentText;
+            
+            if(isItalic) preview.classList.add('is-italic');
+            if(isBold) preview.classList.add('is-bold');
+
+            row.appendChild(label);
+            row.appendChild(preview);
+            fontListContainer.appendChild(row);
+        });
+    }
+
+    function sendToSiteManager() {
+        if(!selectedFontName) {
+            alert("Please pick a font first, Captain!");
+            return;
+        }
+        const finalData = {
+            selectedFont: selectedFontName,
+            text: textInput.value,
+            style: {
+                bold: document.getElementById('boldToggle').checked,
+                italic: document.getElementById('italicToggle').checked
+            }
+        };
+        console.log("Data to Send:", finalData);
+        alert(`Sent to Manager!\nFont: ${finalData.selectedFont}\nText: ${finalData.text}`);
+    }
+
+    // Event Listeners
+    textInput.addEventListener('input', updatePreview);
+    document.getElementById('italicToggle').addEventListener('change', updatePreview);
+    document.getElementById('boldToggle').addEventListener('change', updatePreview);
+
+    // Initial Load
+    updatePreview();
+</script>
+
+</body>
+</html>
