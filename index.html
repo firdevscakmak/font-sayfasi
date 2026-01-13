@@ -47,7 +47,7 @@
         .col-name { width: 25%; padding-left: 30px; }
         .col-preview { width: 75%; }
 
-        #font-list { max-height: 600px; overflow-y: auto; background: #1f1f3e; }
+        #font-list { max-height: 450px; overflow-y: auto; background: #1f1f3e; }
         .font-row { display: flex; align-items: center; border-bottom: 1px solid #3a3a5a; cursor: pointer; transition: 0.3s ease; }
         .font-row:hover { background: #3a3a5a; }
         .font-row.selected { background: #00bcd420; border-left: 6px solid #00bcd4; }
@@ -63,8 +63,8 @@
         .btn-send:hover { background: #00aacc; transform: translateY(-3px); }
 
         /* Scrollbar */
-        #font-list::-webkit-scrollbar { width: 8px; }
-        #font-list::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 10px; }
+        #font-list::-webkit-scrollbar { width: 6px; }
+        #font-list::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 8px; }
 
         /* Mobil Uyumluluk */
         @media (max-width: 768px) {
@@ -92,13 +92,13 @@
             <label><input type="checkbox" id="boldToggle"> Bold</label>
         </div>
     </div>
-
+<div id="font-list"></div>
     <div class="list-header">
         <div class="col-name">Font Family</div>
         <div class="col-preview">Live Preview</div>
     </div>
 
-    <div id="font-list"></div>
+    
 
     <div class="footer">
         <button class="btn-send" onclick="sendToSiteManager()">SEND SELECTION</button>
@@ -179,3 +179,4 @@
 
 </body>
 </html>
+
