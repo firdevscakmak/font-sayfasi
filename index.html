@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Font Preview Tool - Gemi Edition</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oregano&family=Playball&family=Great+Vibes&family=Pacifico&family=Cinzel:wght@700&family=Alex+Brush&family=Ranchers&display=swap" rel="stylesheet">
     
     <style>
@@ -58,6 +57,27 @@
         #font-list::-webkit-scrollbar-track { background: #2a2a4a; border-radius: 10px; }
         #font-list::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 10px; border: 2px solid #2a2a4a; }
         #font-list::-webkit-scrollbar-thumb:hover { background: #00aacc; }
+/* Mobil ve Tablet Uyumluluğu */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .page-title { font-size: 2em; }
+            
+            .list-header { font-size: 0.9em; }
+            .col-name { width: 35%; padding-left: 15px; }
+            .col-preview { width: 65%; }
+
+            .font-label { width: 35%; padding: 15px; font-size: 12px; }
+            .font-output { width: 65%; padding: 15px; font-size: 24px; }
+            
+            .btn-send { width: 100%; text-align: center; } /* Mobilde buton tam genişlik */
+        }
+
+        @media (max-width: 480px) {
+            .col-name, .font-label { display: none; } /* Çok dar ekranlarda sadece önizlemeyi göster */
+            .col-preview, .font-output { width: 100%; text-align: center; }
+            .font-output { font-size: 20px; }
+        }
+        
     </style>
 </head>
 <body>
@@ -166,3 +186,4 @@
 
 </body>
 </html>
+
