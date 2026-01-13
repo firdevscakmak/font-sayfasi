@@ -3,87 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Font Preview Tool - Gemi Edition</title>
+    <title>Font Preview Tool - ICAN Laser Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oregano&family=Playball&family=Great+Vibes&family=Pacifico&family=Cinzel:wght@700&family=Alex+Brush&family=Ranchers&display=swap" rel="stylesheet">
     
     <style>
-        /* Yerel Fontları Tanımlama - "./" ekleyerek aynı dizinde olduğunu garanti ediyoruz */
+        /* Yerel Fontlar */
         @font-face { font-family: 'Algerian'; src: url('./fonts/ALGER.TTF') format('truetype'); }
         @font-face { font-family: 'ALS Script'; src: url('./fonts/ALSScript.ttf') format('truetype'); }
         @font-face { font-family: 'Birds of Paradise'; src: url('./fonts/BirdsOfParadise.ttf') format('truetype'); }
         @font-face { font-family: 'Lucinda Calligraphy'; src: url('./fonts/LCALLIG.TTF') format('truetype'); }
         @font-face { font-family: 'Wished Lovely'; src: url('./fonts/WishedLovely.ttf') format('truetype'); }
 
-        body { font-family: 'Roboto', sans-serif; /* ICAN Laser'a uygun daha modern bir font */ background: #1a1a2e; /* Koyu arka plan */ padding: 40px; color: #e0e0e0; }
-        .container { max-width: 1200px; margin: auto; background: #2a2a4a; /* Daha koyu kart */ border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); overflow: hidden; }
-        
-        /* Yeni Başlık Bölümü */
-        .page-title { font-size: 3.5em; font-weight: 800; text-align: center; color: #00bcd4; /* Açık mavi vurgu */ padding-top: 30px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,188,212,0.5); }
+        body { font-family: 'Roboto', sans-serif; background: #1a1a2e; padding: 40px; color: #e0e0e0; margin: 0; }
 
+        /* Mobil Sabit Üst Bar */
+        .selected-font-bar {
+            position: sticky;
+            top: 0;
+            background: #00bcd4;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: none; /* Sadece mobilde/tablette açılacak */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        /* Kontrol Paneli */
+        .container { max-width: 1200px; margin: auto; background: #2a2a4a; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); overflow: hidden; }
+        .page-title { font-size: 3.5em; font-weight: 800; text-align: center; color: #00bcd4; padding-top: 30px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,188,212,0.5); }
+
         .header-panel { padding: 30px; border-bottom: 2px solid #3a3a5a; background: #2a2a4a; }
-        .main-input { width: 100%; padding: 18px; font-size: 22px; border: 2px solid #5a5a7a; border-radius: 8px; outline: none; transition: 0.3s; background: #3a3a5a; color: #ffffff; }
+        .main-input { width: 100%; padding: 18px; font-size: 22px; border: 2px solid #5a5a7a; border-radius: 8px; outline: none; background: #3a3a5a; color: #ffffff; box-sizing: border-box; }
         .main-input:focus { border-color: #00bcd4; box-shadow: 0 0 15px rgba(0,188,212,0.5); }
         
         .styling-options { margin-top: 20px; display: flex; gap: 30px; }
-        .styling-options label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; color: #bbbbbb; font-size: 1.1em; }
-        .styling-options input[type="checkbox"] { transform: scale(1.4); accent-color: #00bcd4; } /* Checkbox rengi */
+        .styling-options label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; color: #bbbbbb; }
+        .styling-options input[type="checkbox"] { transform: scale(1.4); accent-color: #00bcd4; }
 
-
-        /* Liste Alanı */
-        .list-header { display: flex; background: #00bcd4; /* Vurgu rengi */ color: white; padding: 15px 0; font-weight: bold; font-size: 1.2em; text-transform: uppercase; letter-spacing: 1px; }
+        .list-header { display: flex; background: #00bcd4; color: white; padding: 15px 0; font-weight: bold; text-transform: uppercase; }
         .col-name { width: 25%; padding-left: 30px; }
         .col-preview { width: 75%; }
 
         #font-list { max-height: 600px; overflow-y: auto; background: #1f1f3e; }
         .font-row { display: flex; align-items: center; border-bottom: 1px solid #3a3a5a; cursor: pointer; transition: 0.3s ease; }
         .font-row:hover { background: #3a3a5a; }
-        .font-row.selected { background: #00bcd420; /* Hafif transparan vurgu */ border-left: 6px solid #00bcd4; }
+        .font-row.selected { background: #00bcd420; border-left: 6px solid #00bcd4; }
 
-        .font-label { width: 25%; padding: 25px 30px; font-size: 15px; color: #a0a0a0; border-right: 1px solid #3a3a5a; font-weight: 500; }
+        .font-label { width: 25%; padding: 25px 30px; font-size: 15px; color: #a0a0a0; border-right: 1px solid #3a3a5a; }
         .font-output { width: 75%; padding: 25px 30px; font-size: 38px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ffffff; }
 
-        /* Stil Uygulayıcılar */
         .is-italic { font-style: italic; }
         .is-bold { font-weight: bold; }
 
         .footer { padding: 25px; text-align: right; background: #2a2a4a; border-top: 1px solid #3a3a5a; }
-        .btn-send { padding: 18px 45px; background: #00bcd4; /* Vurgu rengi */ color: white; border: none; border-radius: 30px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s ease; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(0,188,212,0.4); }
-        .btn-send:hover { background: #00aacc; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,188,212,0.6); }
+        .btn-send { padding: 18px 45px; background: #00bcd4; color: white; border: none; border-radius: 30px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s ease; box-shadow: 0 5px 15px rgba(0,188,212,0.4); }
+        .btn-send:hover { background: #00aacc; transform: translateY(-3px); }
 
-        /* Scrollbar iyileştirmeleri */
-        #font-list::-webkit-scrollbar { width: 10px; }
-        #font-list::-webkit-scrollbar-track { background: #2a2a4a; border-radius: 10px; }
-        #font-list::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 10px; border: 2px solid #2a2a4a; }
-        #font-list::-webkit-scrollbar-thumb:hover { background: #00aacc; }
-/* Mobil ve Tablet Uyumluluğu */
+        /* Scrollbar */
+        #font-list::-webkit-scrollbar { width: 8px; }
+        #font-list::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 10px; }
+
+        /* Mobil Uyumluluk */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .page-title { font-size: 2em; }
-            
-            .list-header { font-size: 0.9em; }
-            .col-name { width: 35%; padding-left: 15px; }
-            .col-preview { width: 65%; }
-
-            .font-label { width: 35%; padding: 15px; font-size: 12px; }
-            .font-output { width: 65%; padding: 15px; font-size: 24px; }
-            
-            .btn-send { width: 100%; text-align: center; } /* Mobilde buton tam genişlik */
-        }
-
-        @media (max-width: 480px) {
-            .col-name, .font-label { display: none; } /* Çok dar ekranlarda sadece önizlemeyi göster */
+            body { padding: 0; }
+            .selected-font-bar { display: block; } /* Üst barı göster */
+            .page-title { font-size: 2em; padding: 20px 0; }
+            .container { border-radius: 0; }
+            .col-name, .font-label { display: none; } /* Yan taraftaki ismi gizle */
             .col-preview, .font-output { width: 100%; text-align: center; }
-            .font-output { font-size: 20px; }
+            .font-output { font-size: 28px; }
+            .btn-send { width: 100%; }
         }
-        
     </style>
 </head>
 <body>
 
+<div id="topSelectedBar" class="selected-font-bar">Selected: None</div>
+
 <div class="container">
-    <h1 class="page-title">FONT LIST</h1> <div class="header-panel">
+    <h1 class="page-title">FONT LIST</h1> 
+    <div class="header-panel">
         <input type="text" id="textInput" class="main-input" placeholder="Enter your custom text..." value="Life is Beautiful">
         <div class="styling-options">
             <label><input type="checkbox" id="italicToggle"> Italic</label>
@@ -96,8 +98,7 @@
         <div class="col-preview">Live Preview</div>
     </div>
 
-    <div id="font-list">
-        </div>
+    <div id="font-list"></div>
 
     <div class="footer">
         <button class="btn-send" onclick="sendToSiteManager()">SEND SELECTION</button>
@@ -105,7 +106,6 @@
 </div>
 
 <script>
-    // Birleştirdiğimiz font listesi
     const fontLibrary = [
         { name: "Times New Roman", family: "'Times New Roman', serif" },
         { name: "Cambria", family: "Cambria, Georgia, serif" },
@@ -125,6 +125,13 @@
     let selectedFontName = "";
     const textInput = document.getElementById('textInput');
     const fontListContainer = document.getElementById('font-list');
+    const topBar = document.getElementById('topSelectedBar');
+
+    function selectRow(name) {
+        selectedFontName = name;
+        topBar.innerText = "Selected: " + name; // Üst barı güncelle
+        updatePreview();
+    }
 
     function updatePreview() {
         fontListContainer.innerHTML = "";
@@ -135,10 +142,7 @@
         fontLibrary.forEach(font => {
             const row = document.createElement('div');
             row.className = 'font-row' + (selectedFontName === font.name ? ' selected' : '');
-            row.onclick = () => {
-                selectedFontName = font.name;
-                updatePreview();
-            };
+            row.onclick = () => selectRow(font.name);
 
             const label = document.createElement('div');
             label.className = 'font-label';
@@ -160,30 +164,18 @@
 
     function sendToSiteManager() {
         if(!selectedFontName) {
-            alert("Please pick a font first, Captain!");
+            alert("Please pick a font first!");
             return;
         }
-        const finalData = {
-            selectedFont: selectedFontName,
-            text: textInput.value,
-            style: {
-                bold: document.getElementById('boldToggle').checked,
-                italic: document.getElementById('italicToggle').checked
-            }
-        };
-        console.log("Data to Send:", finalData);
-        alert(`Sent to Manager!\nFont: ${finalData.selectedFont}\nText: ${finalData.text}`);
+        alert(`Sent to Manager!\nFont: ${selectedFontName}\nText: ${textInput.value}`);
     }
 
-    // Event Listeners
     textInput.addEventListener('input', updatePreview);
     document.getElementById('italicToggle').addEventListener('change', updatePreview);
     document.getElementById('boldToggle').addEventListener('change', updatePreview);
 
-    // Initial Load
     updatePreview();
 </script>
 
 </body>
 </html>
-
